@@ -1,0 +1,1 @@
+"""Seed new students for a new cohort"""
