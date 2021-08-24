@@ -10,13 +10,13 @@ class Cohort(db.Model):
     __tablename__ = "cohorts"
 
     cohort_id = db.Column(db.String, primary_key=True)
-    title = db.Column(db.String)
-    # cohort_number
-    # description
-    # nickname
-    # start_date
-    # end_date
-    # json_url
+    title = db.Column(db.String, nullable=True)
+    cohort_number = db.Column(db.Integer, nullable=True)
+    description = db.Column(db.String, nullable=True)
+    nickname = db.Column(db.String, nullable=True)
+    start_date = db.Column(db.String, nullable=True)
+    end_date = db.Column(db.String, nullable=True)
+    json_url = db.Column(db.String, nullable=False)
 
     # students = a list of Student objects
 
@@ -29,11 +29,11 @@ class Student(db.Model):
     __tablename__ = "students"
 
     student_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    # fname
-    # lname
-    # tech_level
+    fname = db.Column(db.String, nullable=False)
+    lname = db.Column(db.String, nullable=False)
+    tech_level = db.Column(db.Integer, nullable=True)
     cohort_id = db.Column(db.String, db.ForeignKey("cohorts.cohort_id"))
-    discord_name = db.Column(db.String, nullable=False)
+    discord_name = db.Column(db.String, nullable=True)
 
     cohort = db.relationship('Cohort', backref='students')
     student_pairs = db.relationship('Student', secondary='lab_pairs',
@@ -49,7 +49,7 @@ class Lab(db.Model):
     __tablename__ = "labs"
 
     lab_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    title = db.Column(db.String)
+    title = db.Column(db.String, nullable=False)
 
     def __repr__(self):
         return f"<Lab lab_id={self.lab_id} title={self.title}>"
@@ -62,12 +62,13 @@ class LabPair(db.Model):
     lab_pair_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("students.student_id"))
     pair_id = db.Column(db.Integer, db.ForeignKey("students.student_id"))
+    bad_experience = db.Column(db.Boolean, nullable=True)
 
     def __repr__(self):
         return f"<LabPair user_id={self.user_id} pair_id={self.pair_id}>"
 
 
-def connect_to_db(flask_app, db_uri="postgresql:///lab-pairs", echo=True):
+def connect_to_db(flask_app, db_uri="postgresql:///lab-pairs", echo=False):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     flask_app.config["SQLALCHEMY_ECHO"] = echo
     flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
