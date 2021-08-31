@@ -7,7 +7,22 @@ import requests
 def create_new_lab(title):
     return Lab(title=title)
 
-def create_new_cohort(cohort_id):
+def format_cohort_id(cohort_id):
+    c_id_list = []
+    for char in cohort_id:
+        if char.isalpha():
+            char = char.lower()
+        c_id_list.append(char)
+    cohort_id = "".join(c_id_list)
+    return cohort_id
+
+def is_cohort_in_db(cohort_id):
+    cohort = Cohort.query.filter_by(cohort_id=cohort_id).all()
+    if cohort:
+        return True
+    return False   
+
+def create_new_cohort_with_api(cohort_id):
     all_cohorts_url = 'https://fellowship.hackbrightacademy.com/api/cohorts/'
     payload = {'format': 'json'}
     res = requests.get(all_cohorts_url, params=payload)
@@ -15,35 +30,62 @@ def create_new_cohort(cohort_id):
     print('>>>>>>>>>>>>>>>>>>>>')
     print('got all cohorts json')
     
+    cohort_dict = {}
     for cohort in all_cohorts:
+        print(f"if {cohort['id']} == {cohort_id}")
         if cohort['id'] == cohort_id:
             cohort_dict = cohort
+            print("cohort found!!!!")
             break
     
-    print('accessing requested cohort')
-    json_url = cohort['url']
-    cohort_res = requests.get(json_url, params=payload)
-    cohort_data = cohort_res.json()
+    if cohort_dict:
+        print('accessing requested cohort')
+        json_url = cohort['url']
+        cohort_res = requests.get(json_url, params=payload)
+        cohort_data = cohort_res.json()
 
-    cohort_id = cohort_data['id']
-    title = cohort_data['title']
-    cohort_number = cohort_data['cohort_number']
-    description = cohort_data['description']
-    nickname = cohort_data['nickname']
-    start_date = cohort_data['start_date']
-    end_date = cohort_data['end_date']
+        print('defining new cohort variables')
+        title = cohort_data['title']
+        cohort_number = cohort_data['cohort_number']
+        description = cohort_data['description']
+        nickname = cohort_data['nickname']
+        start_date = cohort_data['start_date']
+        end_date = cohort_data['end_date']
+
+        new_cohort = Cohort(cohort_id=cohort_id, title=title, cohort_number=cohort_number,
+                            description=description, nickname=nickname, start_date=start_date,
+                            end_date=end_date, json_url=json_url
+        )
+        print('created new cohort object')
+        db.session.add(new_cohort)
+        print('added new cohort')
+        db.session.commit()
+        print('committed new cohort')
+        print('>>>>>>>>>>>>>>>>>>>>')
+        return(new_cohort)
+    else:
+        return None
+
+def create_new_cohort_directly(cohort_id, title, cohort_number, description, nickname,
+                               start_date, end_date, json_url):
+    print('>>>>>>>>>>>>>>>>>>>>')    
+    print('received new cohort variables')
 
     new_cohort = Cohort(cohort_id=cohort_id, title=title, cohort_number=cohort_number,
                         description=description, nickname=nickname, start_date=start_date,
                         end_date=end_date, json_url=json_url
     )
+    print('created new cohort object')
+    print(new_cohort)
 
     db.session.add(new_cohort)
     print('added new cohort')
+
     db.session.commit()
     print('committed new cohort')
     print('>>>>>>>>>>>>>>>>>>>>')
-    return(new_cohort)
+
+    return new_cohort
 
 def create_new_student(fname, lname, cohort_id):
     student = Student(fname=fname, lname=lname, cohort_id=cohort_id)
@@ -51,7 +93,7 @@ def create_new_student(fname, lname, cohort_id):
     db.session.commit()
     return student
 
-def create_new_student_all_fields(fname, lname, tech_level, cohort_id, discord_name):
+def create_new_student_all_fields(fname, lname, cohort_id, tech_level=None, discord_name=None):
     student = Student(fname=fname, lname=lname, tech_level=tech_level,
                    cohort_id=cohort_id, discord_name=discord_name)
     db.session.add(student)

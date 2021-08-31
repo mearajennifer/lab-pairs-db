@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Pairs: Home{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+<h1>Add Students</h1>
+
+<div>
+    <form action="/add-students" method="POST">
+        <p>
+            <label for="fname-input">First name:</label>
+            <input type="text" id="fname-input" name="fname" required>
+        </p>
+
+        <p>
+            <label for="lname-input">Last name:</label>
+            <input type="text" id="lname-input" name="lname" required>
+        </p>
+
+        <p>
+            <label for="tech-level-input">Tech level:</label>
+            <select id="tech-level-input" name="tech_level">
+                <option value="" selected disabled hidden>Select a number</option>
+                {% for i in range(1, 11) %}
+                    <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="cohort-id-input">Cohort:</label>
+            <input type="text" id="cohort-id-input" name="cohort_id" required>
+        </p>
+
+        <p>
+            <label for="discord-name-input">Discord name:</label>
+            <input type="text" id="discord-name-input" name="discord_name">
+        </p>
+
+        <p>
+            <button type="submit">Submit</button>
+        </p>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block after_body %}{% endblock %}

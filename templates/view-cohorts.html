@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Pairs: Cohorts{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+
+    <ul>
+    {% for cohort in cohorts %}
+        <li>
+            {{ cohort.cohort_id }}
+        </li>
+    {% endfor %}
+    </ul>
+
+{% endblock %}
+
+{% block after_body %}{% endblock %}

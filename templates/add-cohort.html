@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Pairs: Add a Cohort{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+<h1>Add a Cohort</h1>
+
+<p>
+    Add a cohort by entering the cohort id, such as "SERFT7". This application uses 
+    the Hackbright API to find the cohort data and add it to the database.
+</p>
+
+<div>
+    <form action="/add-cohort" method="POST">
+        <p>
+            <label for="cohort-id-input">Cohort ID:</label>
+            <input type="text" id="cohort-id-input" name="cohort_id" required>
+        </p>
+
+        <p>
+            <button type="submit">Submit</button>
+        </p>
+    </form>
+</div>
+
+<div>
+    <p>
+        If the API does not have data on the cohort, you can enter it manually here:
+    </p>
+    <form action="/manually-add-cohort" method="POST">
+        <p>
+            <label for="cohort-id-input">Cohort ID:</label>
+            <input type="text" id="cohort-id-input" name="cohort_id" placeholder="serft7" required>*
+        </p>
+
+        <p>
+            <label for="title-input">Title:</label>
+            <input type="text" id="title-input" name="title" placeholder="Engineering: Oct. '21 Katherine">
+        </p>
+
+        <p>
+            <label for="cohort-number-input">Cohort Number:</label>
+            <input type="text" id="cohort-number-input" name="cohort_number" placeholder="63">
+        </p>
+
+        <p>
+            <label for="description-input">Description:</label>
+            <input type="text" id="description-input" name="description">
+        </p>
+
+        <p>
+            <label for="nickname-input">Nickname:</label>
+            <input type="text" id="nickname-input" name="nickname">
+        </p>
+
+        <p>
+            <label for="start-date-input">Start date:</label>
+            <input type="date" id="start-date-input" name="start_date" value="2021-07-12">
+        </p>
+
+        <p>
+            <label for="end-date-input">End date:</label>
+            <input type="date" id="end-date-input" name="end_date" value="2021-10-01">
+        </p>
+
+        <p>
+            <label for="json-url-input">JSON url:</label>
+            <input type="text" id="json-url-input" name="json_url"
+            placeholder="https://fellowship.hackbrightacademy.com/api/cohorts/serft7/">
+        </p>
+
+        <p>
+            <button type="submit">Submit</button>
+        </p>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block after_body %}{% endblock %}
