@@ -7,9 +7,18 @@
 {% block body %}
 
     <ul>
-    {% for cohort in cohorts %}
+    {% for cohort in cohorts|sort(attribute='start_date') %}
         <li>
-            {{ cohort.cohort_id }}
+            {{ cohort.cohort_id }}: {{ cohort.title }}<br>
+            Dates: {{ cohort.start_date }} to {{ cohort.end_date }}<br>
+            {{ cohort.students|length }} students{% if cohort.students|length > 0 %}:{% endif %}
+            <ul>
+                {% for student in cohort.students|sort(attribute='fname') %}
+                    <li>
+                        {{ student.fname }} {{ student.lname }} - Lvl: {{ student.tech_level }}
+                    </li>
+                {% endfor %}
+            </ul>
         </li>
     {% endfor %}
     </ul>

@@ -40,11 +40,11 @@ def add_cohort_form():
             return redirect("/")
 
         cohort = crud.create_new_cohort_with_api(cohort_id)
-        if cohort:
-            flash(f"Cohort {cohort.title} added!")
+        if not cohort:
+            flash("Cohort not found! Please try again.")
             return redirect("/")
         
-        flash("Cohort not found! Please try again.")
+        flash(f"Cohort {cohort.title} added!")
         return redirect("/")
 
 @app.route("/manually-add-cohort", methods=["POST"])
@@ -80,6 +80,18 @@ def manually_add_cohort_form():
     flash(f"Cohort {cohort.cohort_id} added!")
     return redirect("/")
 
+@app.route("/view-cohorts", methods=["GET"])
+def show_all_cohorts():
+    """Display all cohorts in db."""
+
+    cohorts = crud.get_all_cohorts()
+
+    if not cohorts:
+        flash("There are no cohorts in the database.")
+        return redirect("/add-cohort")
+    
+    return render_template("view-cohorts.html", cohorts=cohorts)
+
 
 ##################################################################
 # STUDENT ROUTES #
@@ -100,8 +112,37 @@ def add_students_form():
         discord_name = request.form.get("discord_name", None)
 
         student = crud.create_new_student_all_fields(fname, lname, cohort_id, tech_level, discord_name)
-        flash("Student {student.fname} {student.lname} added!")
+        flash(f"Student {student.fname} {student.lname} added!")
         return redirect("/")
+
+@app.route("/update-students", methods=["GET", "POST"])
+def update_students_form():
+    """Display form to update students or process updates to student data & add to db."""
+
+    if request.method == "GET":
+        cohorts = crud.get_all_cohorts()
+        return render_template("update-students.html", cohorts=cohorts)
+    
+    elif request.method == "POST":
+        student_id = request.form.get("student_id")
+        tech_level = request.form.get("tech_level", None)
+        discord_name = request.form.get("discord_name", None)
+        print(">>>>>>>>>>>>")
+        print(f"Student ID: {student_id}")
+
+        student = crud.find_student(student_id)
+        print(student)
+        if tech_level: 
+            student = crud.update_student_tech_level(student.student_id, tech_level)
+            print("Tech level updated!")
+        
+        if discord_name:
+            student = crud.update_student_discord_name(student.student_id, discord_name)
+            print("Discord name updated!")
+        
+        print(">>>>>>>>>>>>")
+        flash(f"The changes you requested for {student.fname} {student.lname} were completed!")
+        return redirect("/update-students")
 
 ##################################################################
 # LAB PAIR ROUTES #

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Pairs: Update Student{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+<h1>Update Student</h1>
+
+<div>
+    <form action="/update-students" method="POST">
+        <p>
+            <label for="student-id-input">Students by cohort and name:</label>
+            <select id="student-id-input" name="student_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>Enter updated tech level and/or new Discord name:</p>
+        <p>
+            <label for="tech-level-input">Tech level:</label>
+            <select id="tech-level-input" name="tech_level">
+                <option value="" selected>Select a number</option>
+                {% for i in range(1, 11) %}
+                    <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="discord-name-input">Discord name:</label>
+            <input type="text" id="discord-name-input" name="discord_name">
+        </p>
+
+        <p>
+            <button type="submit">Submit</button>
+        </p>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block after_body %}{% endblock %}

@@ -87,6 +87,10 @@ def create_new_cohort_directly(cohort_id, title, cohort_number, description, nic
 
     return new_cohort
 
+def get_all_cohorts():
+    cohorts = Cohort.query.all()
+    return cohorts
+
 def create_new_student(fname, lname, cohort_id):
     student = Student(fname=fname, lname=lname, cohort_id=cohort_id)
     db.session.add(student)
@@ -98,6 +102,10 @@ def create_new_student_all_fields(fname, lname, cohort_id, tech_level=None, disc
                    cohort_id=cohort_id, discord_name=discord_name)
     db.session.add(student)
     db.session.commit()
+    return student
+
+def find_student(student_id):
+    student = Student.query.filter_by(student_id=student_id).first()
     return student
 
 def update_student_tech_level(student_id, tech_level):
