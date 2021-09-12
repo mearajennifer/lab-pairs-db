@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Pairs: Find Student's Pairs{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+<h1>Find Student's Pairs</h1>
+
+<p>
+    Select student from cohort.
+</p>
+
+<div>
+    <form action="/view-student-pairs" method="POST">
+        <p>
+            <label for="student-id-input">Students by cohort and name:</label>
+            <select id="student-id-input" name="student_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <button type="submit">Submit</button>
+        </p>
+    </form>
+</div>
+
+
+{% endblock %}
+
+{% block after_body %}{% endblock %}

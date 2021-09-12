@@ -4,6 +4,7 @@ from model import db, Cohort, Student, Lab, LabPair, connect_to_db
 import requests
 from random import randrange, choice
 from pprint import pprint
+from sqlalchemy import desc
 
 
 ##################################################################
@@ -249,6 +250,22 @@ def pairs_by_date(cohort, pair_date):
     print()
     return pair_list
 
+def get_students_pairs(student_id):
+    lab_pairs = Student.query.filter_by(student_id=student_id).first().student_pairs
+    #  .order_by(desc(LabPair.pair_date))
+    pprint(lab_pairs)
+    return lab_pairs
+
+def get_students_pair_count(student_id):
+    lab_pairs = Student.query.filter_by(student_id=student_id).first().student_pairs
+    pair_count = {}
+    for pair in lab_pairs:
+        if pair not in pair_count:
+            pair_count[pair] = 1
+        else:
+            pair_count[pair] += 1
+    pprint(pair_count)
+    return pair_count
 
 def update_pair_experience(student_id, pair_id):
     pass

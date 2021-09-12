@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Pairs: View Student's Pairs{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+<h1>View Student's Pairs</h1>
+
+<p>
+    View {{ student.fname }} {{ student.lname }} pairs count & lab pairs by date
+</p>
+
+<div>
+    <h2>Pairs Count</h2>
+    <table>
+        <thead>Pair Name</thead>
+        <thead>Count</thead>
+        {% for student, count in pairs_count.items() %}
+            <tr>
+                <td>{{ student.fname }} {{ student.lname }} </td>
+                <td>{{ count }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div>
+    <h2>Lab Pairs By Date</h2>
+    <ul>
+        {% for pair in lab_pairs %}
+            <li>{{ pair }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+
+{% endblock %}
+
+{% block after_body %}{% endblock %}

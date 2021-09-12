@@ -201,6 +201,24 @@ def view_cohort_pairs():
 
     return redirect("/")
 
+@app.route("/view-student-pairs", methods=["GET", "POST"])
+def view_student_pairs():
+    """Display student pairs form or process & display student pairs"""
+    cohorts = crud.get_all_cohorts()
+
+    if request.method == "GET":
+        return render_template("student-pairs-form.html", cohorts=cohorts)
+    elif request.method == "POST":
+        student_id = request.form.get("student_id")
+        student = crud.find_student(student_id)
+
+        lab_pairs = crud.get_students_pairs(student_id)
+        pairs_count = crud.get_students_pair_count(student_id)
+
+        flash(f"Received student id: {student_id}")
+        return render_template("view-student-pairs.html", student=student, lab_pairs=lab_pairs, pairs_count=pairs_count)
+    return redirect("/")
+
 if __name__ == "__main__":
     # DebugToolbarExtension(app)
     connect_to_db(app)
