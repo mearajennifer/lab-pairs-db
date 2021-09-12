@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Pairs: View Cohort Pairs{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<h1>View Cohort Pairs</h1>
+
+<p>
+    {{ pair_date }} lab pairs for {{ cohort.cohort_id }}: {{ cohort.title }}
+</p>
+
+<div>
+    <ul>        
+        {% for pair in pairs %}
+            {% if pair|length > 2 %}
+                <li>{{pair[0].fname}} & {{pair[1].fname}} & {{pair[2].fname}}</li>
+            {% else %}
+                <li>{{pair[0].fname}} & {{pair[1].fname}}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+
+
+{% endblock %}
+
+{% block after_body %}{% endblock %}

@@ -114,7 +114,7 @@ def add_students_form():
 
         student = crud.create_new_student_all_fields(fname, lname, cohort_id, tech_level, discord_name)
         flash(f"Student {student.fname} {student.lname} added!")
-        return redirect("/")
+        return redirect("/add-students")
 
 @app.route("/update-students", methods=["GET", "POST"])
 def update_students_form():
@@ -151,17 +151,18 @@ def update_students_form():
 
 @app.route("/create-pairs", methods=["GET", "POST"])
 def create_pairs():
-    """Display form to create lab pairs or process and display cohort pairs."""
+    """Display form to create lab pairs or process and display lab pairs."""
     
     cohorts = crud.get_all_cohorts()
     labs = crud.get_all_labs()
     pairs = []
     
-    if request.method == "GET":    
+    if request.method == "GET":
+        # display form
         return render_template("create-pairs-form.html", cohorts=cohorts, labs=labs, pairs=pairs)
-    # template: select cohort, select date, select process (random, tech level, and eventually, create your own pairs)
     
-    if request.method == "POST":
+    elif request.method == "POST":
+        # receive form data & create pairs
         cohort_id = request.form.get("cohort_id")
         pair_date = request.form.get("pair_date")
         lab_id = request.form.get("lab_id")
@@ -176,8 +177,28 @@ def create_pairs():
 
 @app.route("/view-cohort-pairs", methods=["GET", "POST"])
 def view_cohort_pairs():
-    """   """
-    # template: drop down menu with cohorts, if pairs data is passed then show it
+    """Display cohort pairs form or process & display cohort pairs"""
+    cohorts = crud.get_all_cohorts()
+    
+    if request.method == "GET":
+        #display form
+        return render_template("cohort-pairs-form.html", cohorts=cohorts)
+    
+    elif request.method == "POST":
+        # get form data, query db, display pairs
+        cohort_id = request.form.get("cohort_id")
+        pair_date = request.form.get("pair_date")
+
+        cohort = crud.find_cohort(cohort_id)
+
+        # find all pairs on that date
+        pairs = crud.pairs_by_date(cohort, pair_date)
+
+        ##### maybe need a LabDate table to easily grab lab info? #####
+
+        flash(f"Cohort ID {cohort_id} and Pair Date {pair_date} received")
+        return render_template("display-cohort-pairs.html", pairs=pairs, pair_date=pair_date, cohort=cohort)
+
     return redirect("/")
 
 if __name__ == "__main__":

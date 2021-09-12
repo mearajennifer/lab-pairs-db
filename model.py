@@ -63,7 +63,10 @@ class LabPair(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("students.student_id"))
     pair_id = db.Column(db.Integer, db.ForeignKey("students.student_id"))
     pair_date = db.Column(db.String, nullable=False)
+    lab_id = db.Column(db.Integer, db.ForeignKey("labs.lab_id"))
     bad_experience = db.Column(db.Boolean, nullable=True)
+
+    lab = db.relationship('Lab', backref = 'lab_pairs')
 
     def __repr__(self):
         return f"<LabPair user_id={self.user_id} pair_id={self.pair_id}>"

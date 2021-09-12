@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Pairs: Find Cohort Pairs{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+<h1>Find Cohort Pairs</h1>
+
+<p>
+    Select cohort and date to view lab and pairs data. If no date is selected, 
+    pairs for all dates will be returned.
+</p>
+
+<div>
+    <form action="/view-cohort-pairs" method="POST">
+        <p>
+            <label for="cohort-id-input">Cohort:</label>
+            <select id="cohort-id-input" name="cohort_id" required>
+                <option value="" selected>Select a cohort</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <option value="{{ cohort.cohort_id }}">{{ cohort.cohort_id }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="pair-date-input">Date:</label>
+            <input type="date" id="pair-date-input" name="pair_date">
+        </p>
+
+        <p>
+            <button type="submit">Submit</button>
+        </p>
+    </form>
+</div>
+
+
+{% endblock %}
+
+{% block after_body %}{% endblock %}

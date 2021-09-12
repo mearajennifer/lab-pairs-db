@@ -2,7 +2,9 @@
 
 {% block title %}Lab Pairs: Display Pairs{% endblock %}
 
-{% block head %}{% endblock %}
+{% block head %}
+<style>ol.A {list-style-type: upper-alpha;}</style>
+{% endblock %}
 
 {% block body %}
 <h1>New Lab Pairs</h1>
@@ -12,15 +14,28 @@
 </p>
 
 <div>
-    <ul>
-        {% for pair in pairs %}
+    <p>Malala:</p>
+    {% set half_len = (pairs|length/2)|round|int %}
+    <ol class="A">        
+        {% for pair in pairs[:half_len] %}
             {% if pair|length > 2 %}
-                <li>{{pair[0].discord_name}} & {{pair[1].discord_name}} & {{pair[2].discord_name}}</li>
+                <li>{{pair[0].fname}} & {{pair[1].fname}} & {{pair[2].fname}}</li>
             {% else %}
-                <li>{{pair[0].discord_name}} & {{pair[1].discord_name}}</li>
+                <li>{{pair[0].fname}} & {{pair[1].fname}}</li>
             {% endif %}
         {% endfor %}
-    </ul>
+    </ol>
+        
+    <p>Ruth:</p>
+    <ol class="A">
+        {% for pair in pairs[half_len:] %}
+            {% if pair|length > 2 %}
+                <li>{{pair[0].fname}} & {{pair[1].fname}} & {{pair[2].fname}}</li>
+            {% else %}
+                <li>{{pair[0].fname}} & {{pair[1].fname}}</li>
+            {% endif %}
+        {% endfor %}
+    </ol>
 </div>
 
 
