@@ -102,7 +102,8 @@ def add_students_form():
     """Display form to add students or process form with student data & add to db."""
 
     if request.method == "GET":
-        return render_template("add-students.html")
+        cohorts = crud.get_all_cohorts()
+        return render_template("add-students.html", cohorts=cohorts)
 
     elif request.method == "POST":
         fname = request.form.get("fname")
@@ -147,6 +148,37 @@ def update_students_form():
 ##################################################################
 # LAB PAIR ROUTES #
 ##################################################################
+
+@app.route("/create-pairs", methods=["GET", "POST"])
+def create_pairs():
+    """Display form to create lab pairs or process and display cohort pairs."""
+    
+    cohorts = crud.get_all_cohorts()
+    labs = crud.get_all_labs()
+    pairs = []
+    
+    if request.method == "GET":    
+        return render_template("create-pairs-form.html", cohorts=cohorts, labs=labs, pairs=pairs)
+    # template: select cohort, select date, select process (random, tech level, and eventually, create your own pairs)
+    
+    if request.method == "POST":
+        cohort_id = request.form.get("cohort_id")
+        pair_date = request.form.get("pair_date")
+        lab_id = request.form.get("lab_id")
+        process = request.form.get("process")
+
+        cohort = crud.find_cohort(cohort_id)
+        lab = crud.find_lab(lab_id)
+
+        pairs = crud.make_pairs(cohort, pair_date, lab, process)
+
+        return render_template("display-pairs.html", lab=lab, pairs=pairs, pair_date=pair_date)
+
+@app.route("/view-cohort-pairs", methods=["GET", "POST"])
+def view_cohort_pairs():
+    """   """
+    # template: drop down menu with cohorts, if pairs data is passed then show it
+    return redirect("/")
 
 if __name__ == "__main__":
     # DebugToolbarExtension(app)

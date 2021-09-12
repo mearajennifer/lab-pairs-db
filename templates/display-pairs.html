@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Pairs: Display Pairs{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+<h1>New Lab Pairs</h1>
+
+<p>
+    {{ pair_date }} {{ lab.title }} lab pairs:
+</p>
+
+<div>
+    <ul>
+        {% for pair in pairs %}
+            {% if pair|length > 2 %}
+                <li>{{pair[0].discord_name}} & {{pair[1].discord_name}} & {{pair[2].discord_name}}</li>
+            {% else %}
+                <li>{{pair[0].discord_name}} & {{pair[1].discord_name}}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+
+
+{% endblock %}
+
+{% block after_body %}{% endblock %}

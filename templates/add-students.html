@@ -31,7 +31,12 @@
 
         <p>
             <label for="cohort-id-input">Cohort:</label>
-            <input type="text" id="cohort-id-input" name="cohort_id" required>
+            <select id="cohort-id-input" name="cohort_id">
+                <option value="" selected disabled hidden>Select a cohort:</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <option value="{{ cohort.cohort_id }}">{{ cohort.cohort_id }}</option>
+                {% endfor %}
+            </select>
         </p>
 
         <p>

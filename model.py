@@ -62,6 +62,7 @@ class LabPair(db.Model):
     lab_pair_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("students.student_id"))
     pair_id = db.Column(db.Integer, db.ForeignKey("students.student_id"))
+    pair_date = db.Column(db.String, nullable=False)
     bad_experience = db.Column(db.Boolean, nullable=True)
 
     def __repr__(self):

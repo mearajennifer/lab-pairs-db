@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Pairs: Create Pairs{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+<h1>Create Lab Pairs</h1>
+
+<p>
+    Create pairs for a cohort for Hackbright lab exercises with Baloonicorn's handy
+    dandy matching machine. The algorithm looks for negative student interactions and
+    makes sure not to pair those students together. Then it looks at how many times 
+    a student has been paired with all other potential pairs, and chooses a partner 
+    they've been matched with the least number of times. Thus, ensuring students can
+    pair with every cohortmate at least once.
+</p>
+
+<div>
+    <form action="/create-pairs" method="POST">
+        <p>
+            <label for="cohort-id-input">Cohort:</label>
+            <select id="cohort-id-input" name="cohort_id" required>
+                <option value="" selected>Select a cohort</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <option value="{{ cohort.cohort_id }}">{{ cohort.cohort_id }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="pair-date-input">Date:</label>
+            <input type="date" id="pair-date-input" name="pair_date" value="2021-07-12" required>
+        </p>
+
+        <p>
+            <label for="lab-id-input">Lab:</label>
+            <select id="lab-id-input" name="lab_id" required>
+                <option value="" selected>Select a lab</option>
+                {% for lab in labs|sort(attribute='title') %}
+                    <option value="{{ lab.lab_id }}">{{ lab.title }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>Select the type of pairing:</p>
+        <p>
+            <input type="radio" id="random-input" name="process" value="random">
+            <label for="random-input">Random: A random pairing of students as described above.</label>
+        </p>
+        <p>
+            <input type="radio" id="random-input" name="process" value="tech_levels">
+            <label for="random-input">Tech level: Purposefully pairing lower level students with higher level pairs.</label>
+        </p>
+
+        <p>
+            <button type="submit">Submit</button>
+        </p>
+    </form>
+</div>
+
+
+{% endblock %}
+
+{% block after_body %}{% endblock %}

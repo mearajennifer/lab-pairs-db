@@ -2,11 +2,24 @@
 
 from model import db, Cohort, Student, Lab, LabPair, connect_to_db
 import requests
+from random import randrange, choice
 
 
+##################################################################
+# LAB FUNCTIONS #
+##################################################################
 def create_new_lab(title):
     return Lab(title=title)
 
+def get_all_labs():
+    return Lab.query.all()
+
+def find_lab(lab_id):
+    return Lab.query.filter_by(lab_id=lab_id).first()
+
+##################################################################
+# COHORT FUNCTIONS #
+##################################################################
 def format_cohort_id(cohort_id):
     c_id_list = []
     for char in cohort_id:
@@ -88,9 +101,14 @@ def create_new_cohort_directly(cohort_id, title, cohort_number, description, nic
     return new_cohort
 
 def get_all_cohorts():
-    cohorts = Cohort.query.all()
-    return cohorts
+    return Cohort.query.all()
 
+def find_cohort(cohort_id):
+    return Cohort.query.filter_by(cohort_id=cohort_id).first()
+
+##################################################################
+# STUDENT FUNCTIONS #
+##################################################################
 def create_new_student(fname, lname, cohort_id):
     student = Student(fname=fname, lname=lname, cohort_id=cohort_id)
     db.session.add(student)
@@ -120,8 +138,91 @@ def update_student_discord_name(student_id, discord_name):
     db.session.commit()
     return student
 
-def create_lab_pairs():
-    pass
+def find_all_students_in_cohort(cohort):
+    return Student.query.filter_by(cohort=cohort).all()
+
+
+##################################################################
+# PAIR FUNCTIONS #
+##################################################################
+
+def make_pairs(cohort, pair_date, lab, process):
+    lab_pairs = []
+
+    # grab all students in the cohort, get list of ids.
+    students = find_all_students_in_cohort(cohort)
+
+    # dictionary to hold all students and their pair counts
+    # student_id: {pair_id: pair_count, ...}
+    pair_history = {}
+
+    # loop through students and create dictionary of # times paired w/other students
+    for student in students:
+        pairs = LabPair.query.filter_by(user_id=student.student_id).all()
+        pair_count_dict = {s.student_id:0 for s in students if s.student_id != student.student_id}
+        
+        # loop through pairs and +1 count
+        for pair in pairs:
+            if pair.bad_experience == True:
+                pair_count_dict[pair.pair_id] += 99
+            else:
+                pair_count_dict[pair.pair_id] += 1
+        
+        # add this student & their pair count to the main pair_history dict
+        pair_history[student.student_id] = pair_count_dict
+
+    if process == "random":
+        while len(pair_history) > 1:
+            # grab random student_id from pair_history & delete
+            student_id, student_pairs = choice(list(pair_history.items()))           
+            del pair_history[student_id]
+
+            # find student's lowest count pair & delete
+            min_pair_id = choice(list(pair_history.keys()))
+            min_pair_count = student_pairs[min_pair_id]
+            for key, value in student_pairs.items():
+                if key in pair_history: 
+                    if value < min_pair_count:
+                        min_pair_count = value
+                        min_pair_id = key
+            del pair_history[min_pair_id]
+
+            # Add lab pair to lab pair list
+            lab_pairs.append([find_student(student_id), find_student(min_pair_id)])
+
+            # Commit to database
+            create_labpairs(student_id, min_pair_id, pair_date)
+        print(f"Even # lab pairs: {lab_pairs}")
+
+        # if odd number, add last student onto a pair
+        if pair_history:
+            last_student = choice(list(pair_history.keys()))
+            print(last_student)
+            for i in range(len(lab_pairs)):
+                student_1, student_2 = lab_pairs[i]
+                print(student_1, student_2)
+                if (LabPair.query.filter_by(user_id=last_student, pair_id=student_1.student_id, bad_experience=True).all()) or (LabPair.query.filter_by(user_id=last_student, pair_id=student_2.student_id, bad_experience=True).all()):
+                    continue
+                else:
+                    lab_pairs[i].append(find_student(last_student))
+                    break
+            create_labpairs(last_student, student_1.student_id, pair_date)
+            create_labpairs(last_student, student_2.student_id, pair_date)
+
+        print(f"Lab pairs: {lab_pairs}")
+
+    # elif process == "tech_level":
+
+    return lab_pairs
+
+def create_labpairs(user_id, pair_id, pair_date):
+    user_pair = LabPair(user_id=user_id, pair_id=pair_id, pair_date=pair_date)
+    other_pair = LabPair(user_id=pair_id, pair_id=user_id, pair_date=pair_date)
+    db.session.add(user_pair)
+    db.session.add(other_pair)
+    db.session.commit()
+    print(f"{user_pair} & {other_pair} committed to db!")
+
 
 def update_pair_experience(student_id, pair_id):
     pass
