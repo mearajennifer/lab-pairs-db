@@ -67,7 +67,7 @@ class LabPair(db.Model):
     bad_experience = db.Column(db.Boolean, nullable=True)
 
     lab = db.relationship('Lab', backref='lab_pairs')
-    # students = db.relationship('Student', backref='lab_pairs')
+    # student = db.relationship('Student', backref='lab_pair')
 
     def __repr__(self):
         return f"<LabPair user_id={self.user_id} pair_id={self.pair_id}>"

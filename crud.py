@@ -250,11 +250,18 @@ def pairs_by_date(cohort, pair_date):
     print()
     return pair_list
 
-def get_students_pairs(student_id):
-    lab_pairs = Student.query.filter_by(student_id=student_id).first().student_pairs
+def get_labs_and_pairs(student_id):
+    # lab_pairs = Student.query.filter_by(student_id=student_id).first().student_pairs
     #  .order_by(desc(LabPair.pair_date))
-    pprint(lab_pairs)
-    return lab_pairs
+    labs_and_pairs = {}
+    pairs = LabPair.query.filter_by(user_id=student_id).all()
+
+    for pair in pairs:
+        student_pair = Student.query.filter_by(student_id=pair.pair_id).first()
+        lab = Lab.query.filter_by(lab_id=pair.lab_id).first()
+        labs_and_pairs[pair] = [student_pair, lab]
+    pprint(labs_and_pairs)
+    return labs_and_pairs
 
 def get_students_pair_count(student_id):
     lab_pairs = Student.query.filter_by(student_id=student_id).first().student_pairs

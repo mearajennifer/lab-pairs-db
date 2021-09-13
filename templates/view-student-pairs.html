@@ -8,7 +8,7 @@
 <h1>View Student's Pairs</h1>
 
 <p>
-    View {{ student.fname }} {{ student.lname }} pairs count & lab pairs by date
+    View {{ student.student_id }}: {{ student.fname }} {{ student.lname }} pairs count & lab pairs by date
 </p>
 
 <div>
@@ -28,8 +28,8 @@
 <div>
     <h2>Lab Pairs By Date</h2>
     <ul>
-        {% for pair in lab_pairs %}
-            <li>{{ pair }}</li>
+        {% for key, value in labs_and_pairs.items() %}
+            <li>{{ key.pair_date[5:] }} - {{ value[1].title }}: {{ value[0].fname }}</li>
         {% endfor %}
     </ul>
 </div>

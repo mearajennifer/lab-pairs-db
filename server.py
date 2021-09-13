@@ -196,7 +196,7 @@ def view_cohort_pairs():
 
         ##### maybe need a LabDate table to easily grab lab info? #####
 
-        flash(f"Cohort ID {cohort_id} and Pair Date {pair_date} received")
+        # flash(f"Cohort ID {cohort_id} and Pair Date {pair_date} received")
         return render_template("display-cohort-pairs.html", pairs=pairs, pair_date=pair_date, cohort=cohort)
 
     return redirect("/")
@@ -212,11 +212,11 @@ def view_student_pairs():
         student_id = request.form.get("student_id")
         student = crud.find_student(student_id)
 
-        lab_pairs = crud.get_students_pairs(student_id)
+        labs_and_pairs = crud.get_labs_and_pairs(student_id)
         pairs_count = crud.get_students_pair_count(student_id)
 
-        flash(f"Received student id: {student_id}")
-        return render_template("view-student-pairs.html", student=student, lab_pairs=lab_pairs, pairs_count=pairs_count)
+        # flash(f"Received student id: {student_id}")
+        return render_template("view-student-pairs.html", student=student, labs_and_pairs=labs_and_pairs, pairs_count=pairs_count)
     return redirect("/")
 
 if __name__ == "__main__":
