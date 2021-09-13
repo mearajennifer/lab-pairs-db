@@ -9,20 +9,35 @@
 <h1>View Cohort Pairs</h1>
 
 <p>
-    {{ pair_date }} lab pairs for {{ cohort.cohort_id }}: {{ cohort.title }}
+    {% if pair_date %}{{ pair_date[5:] }}{% else %}All{% endif %} lab pairs for {{ cohort.title }}    
 </p>
 
-<div>
-    <ul>        
-        {% for pair in pairs %}
-            {% if pair|length > 2 %}
-                <li>{{pair[0].fname}} & {{pair[1].fname}} & {{pair[2].fname}}</li>
-            {% else %}
-                <li>{{pair[0].fname}} & {{pair[1].fname}}</li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-</div>
+{% if pair_date %}
+    <div>
+        <ul>        
+            {% for pair in pairs %}
+                {% if pair|length > 2 %}
+                    <li>{{pair[0].fname}} & {{pair[1].fname}} & {{pair[2].fname}}</li>
+                {% else %}
+                    <li>{{pair[0].fname}} & {{pair[1].fname}}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+{% else %}
+    <div>
+        <ul>
+            {% for lab in pairs %}
+                <li>{{ lab[0][5:] }}: {{ lab[1].title }}</li>
+                <ul>
+                    {% for pair in pairs[lab] %}
+                        <li>{{ pair[0].fname }} & {{ pair[1].fname }}</li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
 
 
 {% endblock %}

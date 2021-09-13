@@ -191,14 +191,16 @@ def view_cohort_pairs():
 
         cohort = crud.find_cohort(cohort_id)
 
-        # find all pairs on that date
-        pairs = crud.pairs_by_date(cohort, pair_date)
+        if pair_date:
+            # find all pairs on that date and return list
+            pairs = crud.pairs_by_date(cohort, pair_date)
+        else:
+            # find all pairs on all dates and return dict
+            # {(date, lab): [[student, pair], ...] ...}
+            pairs = crud.pairs_without_date(cohort)
 
         ##### maybe need a LabDate table to easily grab lab info? #####
-
-        # flash(f"Cohort ID {cohort_id} and Pair Date {pair_date} received")
         return render_template("view-cohort-pairs.html", pairs=pairs, pair_date=pair_date, cohort=cohort)
-
     return redirect("/")
 
 @app.route("/view-student-pairs", methods=["GET", "POST"])
@@ -215,7 +217,6 @@ def view_student_pairs():
         labs_and_pairs = crud.get_labs_and_pairs(student_id)
         pairs_count = crud.get_students_pair_count(student_id)
 
-        # flash(f"Received student id: {student_id}")
         return render_template("view-student-pairs.html", student=student, labs_and_pairs=labs_and_pairs, pairs_count=pairs_count)
     return redirect("/")
 

@@ -231,10 +231,10 @@ def create_labpairs(user_id, pair_id, pair_date, lab_id):
     print(f"{user_pair} & {other_pair} committed to db!")
 
 def pairs_by_date(cohort, pair_date):
-    pair_list = []
     students = find_all_students_in_cohort(cohort)
     print(f"\nNumber of students in cohort: {len(students)}")
 
+    pair_list = []
     for student in students:
         lab_pairs = LabPair.query.filter_by(user_id=student.student_id, pair_date=pair_date).all()
         for lab_pair in lab_pairs:
@@ -245,14 +245,34 @@ def pairs_by_date(cohort, pair_date):
                     is_added = True
             if not is_added:
                 pair_list.append([student, student_pair])
-    print()
     pprint(pair_list)
-    print()
     return pair_list
 
+def pairs_without_date(cohort):
+    students = find_all_students_in_cohort(cohort)
+    print(f"\nNumber of students in cohort: {len(students)}")
+
+    pairs_by_lab = {}
+    for student in students:
+        student_lab_pairs = LabPair.query.filter_by(user_id=student.student_id).all()
+        for lab_pair in student_lab_pairs:
+            # student = find_student(lab_pair.user_id)
+            student_pair = find_student(lab_pair.pair_id)
+            lab = find_lab(lab_pair.lab_id)
+            date = lab_pair.pair_date
+            if (date, lab) in pairs_by_lab:
+                is_pair_added = False
+                for pair_for_lab in pairs_by_lab[(date, lab)]:
+                    if student in pair_for_lab and student_pair in pair_for_lab:
+                        is_pair_added = True
+                if not is_pair_added:
+                    pairs_by_lab[(date, lab)].append([student, student_pair])
+            else:
+                pairs_by_lab[(date, lab)] = [[student, student_pair]]
+    pprint(pairs_by_lab)
+    return(pairs_by_lab)
+
 def get_labs_and_pairs(student_id):
-    # lab_pairs = Student.query.filter_by(student_id=student_id).first().student_pairs
-    #  .order_by(desc(LabPair.pair_date))
     labs_and_pairs = {}
     pairs = LabPair.query.filter_by(user_id=student_id).all()
 
