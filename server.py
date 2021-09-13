@@ -159,7 +159,7 @@ def create_pairs():
     
     if request.method == "GET":
         # display form
-        return render_template("create-pairs-form.html", cohorts=cohorts, labs=labs, pairs=pairs)
+        return render_template("form-create-pairs.html", cohorts=cohorts, labs=labs, pairs=pairs)
     
     elif request.method == "POST":
         # receive form data & create pairs
@@ -182,7 +182,7 @@ def view_cohort_pairs():
     
     if request.method == "GET":
         #display form
-        return render_template("cohort-pairs-form.html", cohorts=cohorts)
+        return render_template("form-cohort-pairs.html", cohorts=cohorts)
     
     elif request.method == "POST":
         # get form data, query db, display pairs
@@ -207,7 +207,7 @@ def view_student_pairs():
     cohorts = crud.get_all_cohorts()
 
     if request.method == "GET":
-        return render_template("student-pairs-form.html", cohorts=cohorts)
+        return render_template("form-student-pairs.html", cohorts=cohorts)
     elif request.method == "POST":
         student_id = request.form.get("student_id")
         student = crud.find_student(student_id)
