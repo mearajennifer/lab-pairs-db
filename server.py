@@ -173,7 +173,7 @@ def create_pairs():
 
         pairs = crud.make_pairs(cohort, pair_date, lab, process)
 
-        return render_template("display-pairs.html", lab=lab, pairs=pairs, pair_date=pair_date)
+        return render_template("view-pairs.html", lab=lab, pairs=pairs, pair_date=pair_date)
 
 @app.route("/view-cohort-pairs", methods=["GET", "POST"])
 def view_cohort_pairs():
@@ -197,7 +197,7 @@ def view_cohort_pairs():
         ##### maybe need a LabDate table to easily grab lab info? #####
 
         # flash(f"Cohort ID {cohort_id} and Pair Date {pair_date} received")
-        return render_template("display-cohort-pairs.html", pairs=pairs, pair_date=pair_date, cohort=cohort)
+        return render_template("view-cohort-pairs.html", pairs=pairs, pair_date=pair_date, cohort=cohort)
 
     return redirect("/")
 
