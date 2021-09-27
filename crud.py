@@ -11,9 +11,20 @@ from sqlalchemy import desc
 # LAB FUNCTIONS #
 ##################################################################
 def create_new_lab(title):
-    return Lab(title=title)
+    """Creates a new lab object and adds to db."""
+
+    lab = Lab(title=title)
+    db.session.add(lab)
+    db.session.commit()
+
+    return lab
 
 def get_all_labs():
+    """Return all labs from the db.
+    For example:
+    >>> get_all_labs()
+    [<Lab lab_id=1 title=Blockly>, <Lab lab_id=2 title=Guessing Game>, <Lab lab_id=3 title=Calculator 1>, <Lab lab_id=4 title=Calculator 2>, <Lab lab_id=5 title=List Slicing>, <Lab lab_id=6 title=Data Structures>, <Lab lab_id=7 title=Dictionaries: Word Count>, <Lab lab_id=8 title=Dictionaries: Restaurant>, <Lab lab_id=9 title=Markov Chains>, <Lab lab_id=10 title=Markov Chains: Discord>, <Lab lab_id=11 title=Object-Oriented Drawing (in Replit)>, <Lab lab_id=12 title=Practice with Object Oriented Melons>, <Lab lab_id=13 title=Object Oriented Melons>, <Lab lab_id=14 title=HTML: Forms>, <Lab lab_id=15 title=CSS: Trials>, <Lab lab_id=16 title=Flask: Intro>, <Lab lab_id=17 title=Madlibs>, <Lab lab_id=18 title=Shopping Site>, <Lab lab_id=19 title=APIs>, <Lab lab_id=20 title=Testing>, <Lab lab_id=21 title=JavaScript Trials: Part 1>, <Lab lab_id=22 title=JavaScript Trials: Part 2>, <Lab lab_id=23 title=JavaScript Sharkwords>, <Lab lab_id=24 title=JavaScript: Coffee Shop App>, <Lab lab_id=25 title=AJAX>, <Lab lab_id=26 title=React: Trading Cards>, <Lab lab_id=27 title=React: Trading Cards 2>, <Lab lab_id=28 title=Bootstrap>, <Lab lab_id=29 title=SQL Quiz>, <Lab lab_id=30 title=Project Tracker>, <Lab lab_id=31 title=Project Tracker Python>, <Lab lab_id=32 title=Movie Ratings App>, <Lab lab_id=33 title=Testing Flask>]
+    """
     return Lab.query.all()
 
 def find_lab(lab_id):
@@ -23,6 +34,11 @@ def find_lab(lab_id):
 # COHORT FUNCTIONS #
 ##################################################################
 def format_cohort_id(cohort_id):
+    """Format's string to pass to API
+    For example:
+    >>> format_cohort_id('SERFT7')
+    'serft7'
+    """
     c_id_list = []
     for char in cohort_id:
         if char.isalpha():
@@ -83,22 +99,14 @@ def create_new_cohort_with_api(cohort_id):
 
 def create_new_cohort_directly(cohort_id, title, cohort_number, description, nickname,
                                start_date, end_date, json_url):
-    print('>>>>>>>>>>>>>>>>>>>>')    
-    print('received new cohort variables')
 
     new_cohort = Cohort(cohort_id=cohort_id, title=title, cohort_number=cohort_number,
                         description=description, nickname=nickname, start_date=start_date,
                         end_date=end_date, json_url=json_url
     )
-    print('created new cohort object')
-    print(new_cohort)
 
     db.session.add(new_cohort)
-    print('added new cohort')
-
     db.session.commit()
-    print('committed new cohort')
-    print('>>>>>>>>>>>>>>>>>>>>')
 
     return new_cohort
 
@@ -300,5 +308,4 @@ def update_pair_experience(student_id, pair_id):
 
 if __name__ == "__main__":
     from server import app
-
     connect_to_db(app)
