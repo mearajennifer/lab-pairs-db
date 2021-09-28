@@ -31,7 +31,11 @@
                 <li>{{ lab[0][5:] }}: {{ lab[1].title }}</li>
                 <ul>
                     {% for pair in pairs[lab] %}
-                        <li>{{ pair[0].fname }} & {{ pair[1].fname }}</li>
+                        {% if pair|length > 2 %}
+                            <li>{{pair[0].fname}} & {{pair[1].fname}} & {{pair[2].fname}}</li>
+                        {% else %}
+                            <li>{{pair[0].fname}} & {{pair[1].fname}}</li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
             {% endfor %}

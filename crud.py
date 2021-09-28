@@ -242,16 +242,24 @@ def create_labpairs(user_id, pair_id, pair_date, lab_id):
 def pairs_by_date(cohort, pair_date):
     students = find_all_students_in_cohort(cohort)
     print(f"\nNumber of students in cohort: {len(students)}")
+    print(f"Pairing date: {pair_date}")
 
     pair_list = []
     for student in students:
-        print(f'Getting pairs for {student}')
+        print(f"\nGetting pairs for {student}")
         lab_pairs = LabPair.query.filter_by(user_id=student.student_id, pair_date=pair_date).all()
+        print(f"\tLab pairs list: {lab_pairs}")
         for lab_pair in lab_pairs:
             student_pair = find_student(lab_pair.pair_id)
             is_added = False
             for pair in pair_list:
                 if student in pair and student_pair in pair:
+                    is_added = True
+                elif student in pair:
+                    pair.append(student_pair)
+                    is_added = True
+                elif student_pair in pair:
+                    pair.append(student)
                     is_added = True
             if not is_added:
                 pair_list.append([student, student_pair])
@@ -274,6 +282,12 @@ def pairs_without_date(cohort):
                 is_pair_added = False
                 for pair_for_lab in pairs_by_lab[(date, lab)]:
                     if student in pair_for_lab and student_pair in pair_for_lab:
+                        is_pair_added = True
+                    elif student in pair_for_lab:
+                        pair_for_lab.append(student_pair)
+                        is_pair_added = True
+                    elif student_pair in pair_for_lab:
+                        pair_for_lab.append(student)
                         is_pair_added = True
                 if not is_pair_added:
                     pairs_by_lab[(date, lab)].append([student, student_pair])
