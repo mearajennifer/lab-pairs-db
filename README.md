@@ -15,6 +15,7 @@ Balloonicorn's Lab Pair Making Machine
 ## Updates
 
 - 9/12: Basic Flask app with all routes working
+- To-Do: Add 'active' or 'inactive' status update feature
 - To-Do: Deal with uneven number of students and retrieving three-person labs (update model?)
 - To-Do: Update student change for to include all fields
 - To-Do: Create route to log bad student experiences

@@ -17,6 +17,7 @@ class Cohort(db.Model):
     start_date = db.Column(db.String, nullable=True)
     end_date = db.Column(db.String, nullable=True)
     json_url = db.Column(db.String, nullable=True)
+    active = db.Column(db.Boolean, nullable=False, default=True)
 
     # students = a list of Student objects
 

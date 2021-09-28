@@ -82,10 +82,11 @@ def create_new_cohort_with_api(cohort_id):
         nickname = cohort_data['nickname']
         start_date = cohort_data['start_date']
         end_date = cohort_data['end_date']
+        active = True
 
         new_cohort = Cohort(cohort_id=cohort_id, title=title, cohort_number=cohort_number,
                             description=description, nickname=nickname, start_date=start_date,
-                            end_date=end_date, json_url=json_url
+                            end_date=end_date, json_url=json_url, active=active
         )
         print('created new cohort object')
         db.session.add(new_cohort)
@@ -102,7 +103,7 @@ def create_new_cohort_directly(cohort_id, title, cohort_number, description, nic
 
     new_cohort = Cohort(cohort_id=cohort_id, title=title, cohort_number=cohort_number,
                         description=description, nickname=nickname, start_date=start_date,
-                        end_date=end_date, json_url=json_url
+                        end_date=end_date, json_url=json_url, active=True
     )
 
     db.session.add(new_cohort)
@@ -111,7 +112,7 @@ def create_new_cohort_directly(cohort_id, title, cohort_number, description, nic
     return new_cohort
 
 def get_all_cohorts():
-    return Cohort.query.all()
+    return Cohort.query.filter_by(active=True).all()
 
 def find_cohort(cohort_id):
     return Cohort.query.filter_by(cohort_id=cohort_id).first()
@@ -202,15 +203,13 @@ def make_pairs(cohort, pair_date, lab, process):
 
             # Commit to database
             create_labpairs(student_id, min_pair_id, pair_date, lab.lab_id)
-        print(f"Even # lab pairs: {lab_pairs}")
 
         # if odd number, add last student onto a pair
         if pair_history:
             last_student = choice(list(pair_history.keys()))
-            print(last_student)
+            print(f'Last student is: {last_student}')
             for i in range(len(lab_pairs)):
                 student_1, student_2 = lab_pairs[i]
-                print(student_1, student_2)
                 if (LabPair.query.filter_by(user_id=last_student,
                                             pair_id=student_1.student_id,
                                             bad_experience=True).all() or 
@@ -220,11 +219,13 @@ def make_pairs(cohort, pair_date, lab, process):
                     continue
                 else:
                     lab_pairs[i].append(find_student(last_student))
+                    print(f"Added remaining student to lab pair: {lab_pairs[i]}")
                     break
             create_labpairs(last_student, student_1.student_id, pair_date, lab.lab_id)
             create_labpairs(last_student, student_2.student_id, pair_date, lab.lab_id)
 
-        print(f"Lab pairs: {lab_pairs}")
+        print("New lab pairs created: ")
+        pprint(lab_pairs)
 
     # elif process == "tech_level":
 
@@ -236,7 +237,7 @@ def create_labpairs(user_id, pair_id, pair_date, lab_id):
     db.session.add(user_pair)
     db.session.add(other_pair)
     db.session.commit()
-    print(f"{user_pair} & {other_pair} committed to db!")
+    # print(f"{user_pair} & {other_pair} committed to db!")
 
 def pairs_by_date(cohort, pair_date):
     students = find_all_students_in_cohort(cohort)
@@ -244,6 +245,7 @@ def pairs_by_date(cohort, pair_date):
 
     pair_list = []
     for student in students:
+        print(f'Getting pairs for {student}')
         lab_pairs = LabPair.query.filter_by(user_id=student.student_id, pair_date=pair_date).all()
         for lab_pair in lab_pairs:
             student_pair = find_student(lab_pair.pair_id)
