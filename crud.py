@@ -112,10 +112,20 @@ def create_new_cohort_directly(cohort_id, title, cohort_number, description, nic
     return new_cohort
 
 def get_all_cohorts():
+    return Cohort.query.all()
+
+def get_all_active_cohorts():
     return Cohort.query.filter_by(active=True).all()
 
 def find_cohort(cohort_id):
     return Cohort.query.filter_by(cohort_id=cohort_id).first()
+
+def update_cohort_status(cohort_id, active_status):
+    cohort = find_cohort(cohort_id)
+    cohort.active = active_status
+    db.session.commit()
+    return cohort
+
 
 ##################################################################
 # STUDENT FUNCTIONS #
@@ -149,8 +159,17 @@ def update_student_discord_name(student_id, discord_name):
     db.session.commit()
     return student
 
+def update_student_active_status(student_id, active_status):
+    student = Student.query.get(student_id)
+    student.active = active_status
+    db.session.commit()
+    return student
+
 def find_all_students_in_cohort(cohort):
     return Student.query.filter_by(cohort=cohort).all()
+
+def find_all_active_students_in_cohort(cohort):
+    return Student.query.filter_by(cohort=cohort, active=True).all()
 
 
 ##################################################################
@@ -161,7 +180,7 @@ def make_pairs(cohort, pair_date, lab, process):
     lab_pairs = []
 
     # grab all students in the cohort, get list of ids.
-    students = find_all_students_in_cohort(cohort)
+    students = find_all_active_students_in_cohort(cohort)
 
     # dictionary to hold all students and their pair counts
     # student_id: {pair_id: pair_count, ...}

@@ -15,7 +15,7 @@
             <ul>
                 {% for student in cohort.students|sort(attribute='fname') %}
                     <li>
-                        {{ student.fname }} {{ student.lname }} - Lvl: {{ student.tech_level }}
+                        {{ student.fname }} {{ student.lname }} - Lvl: {{ student.tech_level }} - Status: {% if student.active == True %}Active{% else %}<strong>INACTIVE</strong>{% endif %}
                     </li>
                 {% endfor %}
             </ul>

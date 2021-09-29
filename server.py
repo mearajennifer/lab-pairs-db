@@ -84,13 +84,36 @@ def manually_add_cohort_form():
 def show_all_cohorts():
     """Display all cohorts in db."""
 
-    cohorts = crud.get_all_cohorts()
+    cohorts = crud.get_all_active_cohorts()
 
     if not cohorts:
         flash("There are no cohorts in the database.")
         return redirect("/add-cohort")
     
     return render_template("view-cohorts.html", cohorts=cohorts)
+
+@app.route("/update-cohort", methods=["GET", "POST"])
+def update_cohort():
+    """Displays form or updates a cohort status"""
+
+    if request.method == "GET":
+        cohorts = crud.get_all_cohorts()
+        return render_template("update-cohort.html", cohorts=cohorts)
+
+    elif request.method == "POST":
+        cohort_id = request.form.get("cohort_id")
+        active_status = request.form.get("active_status", None)
+        
+        if active_status:
+            if active_status == "active":
+                cohort = crud.update_cohort_status(cohort_id, active_status=True)
+            elif active_status == "inactive":
+                cohort = crud.update_cohort_status(cohort_id, active_status=False)
+            print(f"Cohort active status updated to {active_status}!")
+
+        return redirect("/view-cohorts")
+
+    return redirect("/")
 
 
 ##################################################################
@@ -102,7 +125,7 @@ def add_students_form():
     """Display form to add students or process form with student data & add to db."""
 
     if request.method == "GET":
-        cohorts = crud.get_all_cohorts()
+        cohorts = crud.get_all_active_cohorts()
         return render_template("add-students.html", cohorts=cohorts)
 
     elif request.method == "POST":
@@ -121,13 +144,14 @@ def update_students_form():
     """Display form to update students or process updates to student data & add to db."""
 
     if request.method == "GET":
-        cohorts = crud.get_all_cohorts()
+        cohorts = crud.get_all_active_cohorts()
         return render_template("update-students.html", cohorts=cohorts)
     
     elif request.method == "POST":
         student_id = request.form.get("student_id")
         tech_level = request.form.get("tech_level", None)
         discord_name = request.form.get("discord_name", None)
+        active_status = request.form.get("active_status", None)
         print(">>>>>>>>>>>>")
         print(f"Student ID: {student_id}")
 
@@ -140,6 +164,13 @@ def update_students_form():
         if discord_name:
             student = crud.update_student_discord_name(student.student_id, discord_name)
             print("Discord name updated!")
+
+        if active_status:
+            if active_status == "active":
+                student = crud.update_student_active_status(student.student_id, active_status=True)
+            elif active_status == "inactive":
+                student = crud.update_student_active_status(student.student_id, active_status=False)
+            print(f"Student active status updated to {active_status}!")
         
         print(">>>>>>>>>>>>")
         flash(f"The changes you requested for {student.fname} {student.lname} were completed!")
@@ -153,7 +184,7 @@ def update_students_form():
 def create_pairs():
     """Display form to create lab pairs or process and display lab pairs."""
     
-    cohorts = crud.get_all_cohorts()
+    cohorts = crud.get_all_active_cohorts()
     labs = crud.get_all_labs()
     pairs = []
     
@@ -166,6 +197,7 @@ def create_pairs():
         cohort_id = request.form.get("cohort_id")
         pair_date = request.form.get("pair_date")
         lab_id = request.form.get("lab_id")
+        print(f"Lab id is {lab_id}")
         process = request.form.get("process")
 
         cohort = crud.find_cohort(cohort_id)
@@ -178,7 +210,7 @@ def create_pairs():
 @app.route("/view-cohort-pairs", methods=["GET", "POST"])
 def view_cohort_pairs():
     """Display cohort pairs form or process & display cohort pairs"""
-    cohorts = crud.get_all_cohorts()
+    cohorts = crud.get_all_active_cohorts()
     
     if request.method == "GET":
         #display form
@@ -206,7 +238,7 @@ def view_cohort_pairs():
 @app.route("/view-student-pairs", methods=["GET", "POST"])
 def view_student_pairs():
     """Display student pairs form or process & display student pairs"""
-    cohorts = crud.get_all_cohorts()
+    cohorts = crud.get_all_active_cohorts()
 
     if request.method == "GET":
         return render_template("form-student-pairs.html", cohorts=cohorts)

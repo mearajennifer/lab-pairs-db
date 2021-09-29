@@ -35,6 +35,7 @@ class Student(db.Model):
     tech_level = db.Column(db.Integer, nullable=True)
     cohort_id = db.Column(db.String, db.ForeignKey("cohorts.cohort_id"))
     discord_name = db.Column(db.String, nullable=True)
+    active = db.Column(db.Boolean, default=True)
 
     cohort = db.relationship('Cohort', backref='students')
     student_pairs = db.relationship('Student', secondary='lab_pairs',

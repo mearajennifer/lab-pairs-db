@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Pairs: Update Cohort Status{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+
+<div>
+    <form action="/update-cohort" method="POST">
+        <p>
+            <label for="cohort-id-input">Cohort:</label>
+            <select id="cohort-id-input" name="cohort_id" required>
+                <option value="" selected>Select a cohort</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <option value="{{ cohort.cohort_id }}">{{ cohort.cohort_id }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="active-status-input">Active status:</label>
+            <select id="active-status-input" name="active_status">
+                <option value="" selected>Select status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Not active</option>
+            </select>
+        </p>
+
+        <p>
+            <button type="submit">Submit</button>
+        </p>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block after_body %}{% endblock %}
