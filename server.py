@@ -149,6 +149,8 @@ def update_students_form():
     
     elif request.method == "POST":
         student_id = request.form.get("student_id")
+        fname = request.form.get("fname", None)
+        lname = request.form.get("lname", None)
         tech_level = request.form.get("tech_level", None)
         discord_name = request.form.get("discord_name", None)
         active_status = request.form.get("active_status", None)
@@ -160,6 +162,10 @@ def update_students_form():
         if tech_level: 
             student = crud.update_student_tech_level(student.student_id, tech_level)
             print("Tech level updated!")
+
+        if fname or lname:
+            student = crud.update_student_name(student.student_id, fname, lname)
+            print("Student name updated!")
         
         if discord_name:
             student = crud.update_student_discord_name(student.student_id, discord_name)

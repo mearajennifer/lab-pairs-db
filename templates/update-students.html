@@ -10,7 +10,7 @@
 <div>
     <form action="/update-students" method="POST">
         <p>
-            <label for="student-id-input">Students by cohort and name:</label>
+            <label for="student-id-input">Select a student:</label>
             <select id="student-id-input" name="student_id">
                 <option value="" selected>Select a student</option>
                 {% for cohort in cohorts|sort(attribute='start_date') %}
@@ -23,7 +23,16 @@
             </select>
         </p>
 
-        <p>Enter updated tech level and/or new Discord name:</p>
+        <p>
+            <label for="fname-name-input">First name:</label>
+            <input type="text" id="fname-name-input" name="fname">
+        </p>
+
+        <p>
+            <label for="lname-name-input">Last name:</label>
+            <input type="text" id="lname-name-input" name="lname">
+        </p>
+
         <p>
             <label for="tech-level-input">Tech level:</label>
             <select id="tech-level-input" name="tech_level">
@@ -41,7 +50,7 @@
 
         <p>
             <label for="active-status-input">Active status:</label>
-            <select id="active-status-inputt" name="active_status">
+            <select id="active-status-input" name="active_status">
                 <option value="" selected>Select status</option>
                 <option value="active">Active</option>
                 <option value="inactive">Not active</option>

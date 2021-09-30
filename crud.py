@@ -147,6 +147,15 @@ def find_student(student_id):
     student = Student.query.filter_by(student_id=student_id).first()
     return student
 
+def update_student_name(student_id, fname, lname):
+    student = Student.query.get(student_id)
+    if fname:
+        student.fname = fname
+    if lname:
+        student.lname = lname
+    db.session.commit()
+    return student
+
 def update_student_tech_level(student_id, tech_level):
     student = Student.query.get(student_id)
     student.tech_level = tech_level
