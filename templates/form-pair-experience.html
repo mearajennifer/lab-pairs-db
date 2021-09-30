@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Pairs: Log Pair Experience{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+<h1>Log Pair Experience</h1>
+
+<p>
+    If two students have a poor experience pairing in lab, add that data to the db.
+</p>
+
+<div>
+    <form action="/update-pair-experience" method="POST">
+        <p>
+            <label for="student-1-id-input">Student 1:</label>
+            <select id="student-1-id-input" name="user_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="student-2-id-input">Student 2:</label>
+            <select id="student-2-id-input" name="pair_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="pair-date-input">Date:</label>
+            <input type="date" id="pair-date-input" name="pair_date" required>
+        </p>
+
+        <p>Update pair experience:</p>
+        <p>
+            <input type="radio" id="positive-input" name="experience" value="positive">
+            <label for="positive-input">Positive</label>
+
+            <input type="radio" id="negative-input" name="experience" value="negative">
+            <label for="negative-input">Negative</label>
+        </p>
+
+        <p>
+            <button type="submit">Submit</button>
+        </p>
+    </form>
+</div>
+
+
+{% endblock %}
+
+{% block after_body %}{% endblock %}

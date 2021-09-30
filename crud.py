@@ -204,6 +204,7 @@ def make_pairs(cohort, pair_date, lab, process):
         for pair in pairs:
             if pair.bad_experience == True:
                 pair_count_dict[pair.pair_id] += 99
+                print("*****BAD EXPERIENCE += 99*****")
             else:
                 pair_count_dict[pair.pair_id] += 1
         
@@ -346,9 +347,17 @@ def get_students_pair_count(student_id):
     pprint(pair_count)
     return pair_count
 
-def update_pair_experience(student_id, pair_id):
-    pass
+def find_lab_pair(user_id, pair_id, pair_date):
+    students_lab_pair = LabPair.query.filter_by(user_id=user_id, pair_id=pair_id, pair_date=pair_date).first()
+    pairs_lab_pair = LabPair.query.filter_by(user_id=pair_id, pair_id=user_id, pair_date=pair_date).first()
+    return [students_lab_pair, pairs_lab_pair]
 
+def update_pair_experience(lab_pairs, bad_experience):
+    students_lab_pair, pairs_lab_pair = lab_pairs
+    students_lab_pair.bad_experience = bad_experience
+    pairs_lab_pair.bad_experience = bad_experience
+    db.session.commit()
+    return [students_lab_pair, pairs_lab_pair]
 
 if __name__ == "__main__":
     from server import app

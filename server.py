@@ -213,6 +213,37 @@ def create_pairs():
 
         return render_template("view-pairs.html", lab=lab, pairs=pairs, pair_date=pair_date)
 
+@app.route("/update-pair-experience", methods=["GET", "POST"])
+def update_pair_experience():
+    """Display pair experience update form OR process form."""
+    cohorts = crud.get_all_active_cohorts()
+    
+    if request.method == "GET":
+        # display form
+        return render_template("form-pair-experience.html", cohorts=cohorts)
+    
+    elif request.method == "POST":
+        # get form data, query/update db, redirect
+        user_id = request.form.get("user_id")
+        pair_id = request.form.get("pair_id")
+        pair_date = request.form.get("pair_date")
+        experience = request.form.get("experience")
+
+        lab_pairs = crud.find_lab_pair(user_id, pair_id, pair_date)
+
+        if lab_pairs:
+            if experience == "negative":
+                bad_experience = True
+            elif experience == "positive":
+                bad_experience =  False
+            lab_pairs = crud.update_pair_experience(lab_pairs, bad_experience)
+            flash("Pair experience updated!")
+        else:
+            flash("No pair found to update!")
+        return redirect("/update-pair-experience")
+
+    return redirect("/")
+
 @app.route("/view-cohort-pairs", methods=["GET", "POST"])
 def view_cohort_pairs():
     """Display cohort pairs form or process & display cohort pairs"""
