@@ -210,6 +210,7 @@ def make_pairs(cohort, pair_date, lab, process):
         
         # add this student & their pair count to the main pair_history dict
         pair_history[student.student_id] = pair_count_dict
+    pprint(pair_history)
 
     if process == "random":
         while len(pair_history) > 1:
@@ -337,14 +338,24 @@ def get_labs_and_pairs(student_id):
     return labs_and_pairs
 
 def get_students_pair_count(student_id):
-    lab_pairs = Student.query.filter_by(student_id=student_id).first().student_pairs
-    pair_count = {}
-    for pair in lab_pairs:
-        if pair not in pair_count:
-            pair_count[pair] = 1
-        else:
-            pair_count[pair] += 1
-    pprint(pair_count)
+    # pairs = LabPair.query.filter_by(user_id=student_id).all()
+    # pair_count_dict = {pair.pair_id:0 for pair in pairs if pair.pair_id not in pair_count_dict.keys()}
+    # for pair in pairs:
+    #     pair_count_dict[pair.pair_id] += 1
+    # pprint(pair_history)
+
+    # set up dict with all pairs at count 0
+    students = Student.query.filter_by(student_id=student_id).first().student_pairs
+    pair_count = {s:0 for s in students if s.student_id != student_id}
+    # print("Pair count dict:")
+    # pprint(pair_count)
+
+    # get all student's labpair objects
+    lab_pairs = LabPair.query.filter_by(user_id=student_id).all()
+    for lab_pair in lab_pairs:
+        student_pair = Student.query.filter_by(student_id=lab_pair.pair_id).first()
+        pair_count[student_pair] += 1
+    # pprint(pair_count)
     return pair_count
 
 def find_lab_pair(user_id, pair_id, pair_date):
@@ -358,6 +369,46 @@ def update_pair_experience(lab_pairs, bad_experience):
     pairs_lab_pair.bad_experience = bad_experience
     db.session.commit()
     return [students_lab_pair, pairs_lab_pair]
+
+def delete_lab_pair(user_id, pair_id, pair_date, lab_id):
+    students_lab_pair = LabPair.query.filter_by(user_id=user_id,
+                                                pair_id=pair_id,
+                                                pair_date=pair_date,
+                                                lab_id=lab_id).first()
+    pairs_lab_pair = LabPair.query.filter_by(user_id=pair_id,
+                                             pair_id=user_id,
+                                             pair_date=pair_date,
+                                             lab_id=lab_id).first()
+    if students_lab_pair and pairs_lab_pair:
+        db.session.delete(students_lab_pair)
+        db.session.delete(pairs_lab_pair)
+        db.session.commit()
+        is_deleted = True
+    else:
+        is_deleted = False
+    return is_deleted
+
+def add_lab_pair(user_id, pair_id, pair_date, lab_id):
+    in_db = LabPair.query.filter_by(user_id=user_id,
+                                    pair_id=pair_id,
+                                    pair_date=pair_date,
+                                    lab_id=lab_id).first()
+    if not in_db:
+        students_lab_pair = LabPair(user_id=user_id,
+                                    pair_id=pair_id,
+                                    pair_date=pair_date,
+                                    lab_id=lab_id)
+        pairs_lab_pair = LabPair(user_id=pair_id,
+                                pair_id=user_id,
+                                pair_date=pair_date,
+                                lab_id=lab_id)
+        db.session.add(students_lab_pair)
+        db.session.add(pairs_lab_pair)
+        db.session.commit()
+        is_added = True
+    else:
+        is_added = False
+    return is_added
 
 if __name__ == "__main__":
     from server import app

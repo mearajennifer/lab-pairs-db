@@ -289,6 +289,41 @@ def view_student_pairs():
         return render_template("view-student-pairs.html", student=student, labs_and_pairs=labs_and_pairs, pairs_count=pairs_count)
     return redirect("/")
 
+@app.route("/update-pair", methods=["GET", "POST"])
+def update_pair():
+    cohorts = crud.get_all_active_cohorts()
+    labs = crud.get_all_labs()
+
+    if request.method == "GET":
+        return render_template("form-update-pair.html", cohorts=cohorts, labs=labs)
+
+    elif request.method == "POST":
+        # get form data, query/update db, redirect
+        user_id = request.form.get("user_id")
+        pair_id = request.form.get("pair_id")
+        pair_date = request.form.get("pair_date")
+        lab_id = request.form.get("lab_id")
+        update = request.form.get("update")
+
+        if update == "delete":
+            is_deleted = crud.delete_lab_pair(user_id, pair_id, pair_date, lab_id)
+            if is_deleted:
+                flash("Lab pairs deleted!")
+            else:
+                flash("No lab pairs found!")
+
+        elif update == "add":
+            is_added = crud.add_lab_pair(user_id, pair_id, pair_date, lab_id)
+            if is_added:
+                flash("Lab pairs added!")
+            else:
+                flash("Lab pairs already exist!")
+
+        return redirect("/update-pair")
+
+    return redirect("/")
+
+
 if __name__ == "__main__":
     # DebugToolbarExtension(app)
     connect_to_db(app)

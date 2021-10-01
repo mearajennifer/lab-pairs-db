@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Pairs: Add/Delete Pair{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+<h1>Add/Delete Pair</h1>
+
+<p>
+    Add or delete individual pairs from db.
+</p>
+
+<div>
+    <form action="/update-pair" method="POST">
+        <p>
+            <label for="student-1-id-input">Student 1:</label>
+            <select id="student-1-id-input" name="user_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="student-2-id-input">Student 2:</label>
+            <select id="student-2-id-input" name="pair_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label for="pair-date-input">Date:</label>
+            <input type="date" id="pair-date-input" name="pair_date" required>
+        </p>
+
+        <p>
+            <label for="lab-id-input">Lab:</label>
+            <select id="lab-id-input" name="lab_id" required>
+                <option value="" selected>Select a lab</option>
+                {% for lab in labs|sort(attribute='title') %}
+                    <option value="{{ lab.lab_id }}">{{ lab.title }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>Choose to add or delete this pair:</p>
+        <p>
+            <input type="radio" id="add-input" name="update" value="add">
+            <label for="add-input">Add</label>
+
+            <input type="radio" id="delete-input" name="update" value="delete">
+            <label for="delete-input">Delete</label>
+        </p>
+
+        <p>
+            <button type="submit">Submit</button>
+        </p>
+    </form>
+</div>
+
+
+{% endblock %}
+
+{% block after_body %}{% endblock %}
