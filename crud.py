@@ -190,6 +190,8 @@ def make_pairs(cohort, pair_date, lab, process):
 
     # grab all students in the cohort, get list of ids.
     students = find_all_active_students_in_cohort(cohort)
+    print("Active students: ")
+    pprint(students)
 
     # dictionary to hold all students and their pair counts
     # student_id: {pair_id: pair_count, ...}
@@ -202,11 +204,12 @@ def make_pairs(cohort, pair_date, lab, process):
         
         # loop through pairs and +1 count
         for pair in pairs:
-            if pair.bad_experience == True:
-                pair_count_dict[pair.pair_id] += 99
-                print("*****BAD EXPERIENCE += 99*****")
-            else:
-                pair_count_dict[pair.pair_id] += 1
+            if pair.pair_id in pair_count_dict:
+                if pair.bad_experience == True:
+                    pair_count_dict[pair.pair_id] += 99
+                    print("*****BAD EXPERIENCE += 99*****")
+                else:
+                    pair_count_dict[pair.pair_id] += 1
         
         # add this student & their pair count to the main pair_history dict
         pair_history[student.student_id] = pair_count_dict

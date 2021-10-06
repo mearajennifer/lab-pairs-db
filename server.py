@@ -213,6 +213,68 @@ def create_pairs():
 
         return render_template("view-pairs.html", lab=lab, pairs=pairs, pair_date=pair_date)
 
+@app.route("/manually-create-pairs", methods=["POST"])
+def manually_create_pairs():
+    """Process pairs entered by user, add to db, and view pairs."""
+
+    # receive data from form
+    pass
+    cohort_id = request.form.get("cohort_id")
+    pair_date = request.form.get("pair_date")
+    lab_id = request.form.get("lab_id")
+
+    cohort = crud.find_cohort(cohort_id)
+    lab = crud.find_lab(lab_id)
+
+    pairs_to_add = []
+
+    # pair 1
+    p1_user_id = request.form.get("p1_user_id", None)
+    p1_pair_id = request.form.get("p1_pair_id", None)
+    pairs_to_add.append((p1_user_id, p1_pair_id))
+
+    # pair 2
+    p2_user_id = request.form.get("p2_user_id", None)
+    p2_pair_id = request.form.get("p2_pair_id", None)
+    pairs_to_add.append((p2_user_id, p2_pair_id))
+
+    # pair 3
+    p3_user_id = request.form.get("p3_user_id", None)
+    p3_pair_id = request.form.get("p3_pair_id", None)
+    pairs_to_add.append((p3_user_id, p3_pair_id))
+
+    # pair 4
+    p4_user_id = request.form.get("p4_user_id", None)
+    p4_pair_id = request.form.get("p4_pair_id", None)
+    pairs_to_add.append((p4_user_id, p4_pair_id))
+
+    # pair 5
+    p5_user_id = request.form.get("p5_user_id", None)
+    p5_pair_id = request.form.get("p5_pair_id", None)
+    pairs_to_add.append((p5_user_id, p5_pair_id))
+
+    # pair 6
+    p6_user_id = request.form.get("p6_user_id", None)
+    p6_pair_id = request.form.get("p6_pair_id", None)
+    pairs_to_add.append((p6_user_id, p6_pair_id))
+
+    # pair 7
+    p7_user_id = request.form.get("p7_user_id", None)
+    p7_pair_id = request.form.get("p7_pair_id", None)
+    p7_third_id = request.form.get("p7_third_id", None)
+    pairs_to_add.append((p7_user_id, p7_pair_id))
+    if p7_third_id:
+        pairs_to_add.append((p7_user_id,p7_third_id))
+        pairs_to_add.append((p7_pair_id, p7_third_id))
+
+    for pair in pairs_to_add:
+        if pair[0]:
+            is_added = crud.add_lab_pair(pair[0], pair[1], pair_date, lab_id)
+
+    flash("Pairs added!")
+    return redirect("/view-cohort-pairs")
+    
+
 @app.route("/update-pair-experience", methods=["GET", "POST"])
 def update_pair_experience():
     """Display pair experience update form OR process form."""

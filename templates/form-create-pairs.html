@@ -8,7 +8,7 @@
 <h1>Create Lab Pairs</h1>
 
 <p>
-    Create pairs for a cohort for Hackbright lab exercises with Baloonicorn's handy
+    Create Hackbright lab exercise lab pairs for a cohort with Balloonicorn's handy
     dandy matching machine. The algorithm looks for negative student interactions and
     makes sure not to pair those students together. Then it looks at how many times 
     a student has been paired with all other potential pairs, and chooses a partner 
@@ -30,7 +30,7 @@
 
         <p>
             <label for="pair-date-input">Date:</label>
-            <input type="date" id="pair-date-input" name="pair_date" value="2021-07-12" required>
+            <input type="date" id="pair-date-input" name="pair_date" required>
         </p>
 
         <p>
@@ -45,12 +45,252 @@
 
         <p>Select the type of pairing:</p>
         <p>
-            <input type="radio" id="random-input" name="process" value="random">
+            <input type="radio" id="random-input" name="process" value="random" checked="checked">
             <label for="random-input">Random: A random pairing of students as described above.</label>
+            <br>
+            <input type="radio" id="random-input" name="process" value="tech_levels" disabled>
+            <label for="random-input" disabled>Tech level: Purposefully pairing lower level students with higher level pairs.</label>
+        </p>
+
+        <p>
+            <button type="submit">Submit</button>
+        </p>
+    </form>
+</div>
+
+<div>
+    <p>If you'd like to manually create all the pairs for this lab exercise, use this form.</p>
+
+    <form action="/manually-create-pairs" method="POST">
+        <p>
+            <label for="cohort-id-input">Cohort:</label>
+            <select id="cohort-id-input" name="cohort_id" required>
+                <option value="" selected>Select a cohort</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <option value="{{ cohort.cohort_id }}">{{ cohort.cohort_id }}</option>
+                {% endfor %}
+            </select>
         </p>
         <p>
-            <input type="radio" id="random-input" name="process" value="tech_levels">
-            <label for="random-input">Tech level: Purposefully pairing lower level students with higher level pairs.</label>
+            <label for="pair-date-input">Date:</label>
+            <input type="date" id="pair-date-input" name="pair_date" required>
+        </p>
+
+        <p>
+            <label for="lab-id-input">Lab:</label>
+            <select id="lab-id-input" name="lab_id" required>
+                <option value="" selected>Select a lab</option>
+                {% for lab in labs|sort(attribute='title') %}
+                    <option value="{{ lab.lab_id }}">{{ lab.title }}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            Pair 1
+            <br>
+            <label for="p1-student-id-input">Student 1:</label>
+            <select id="p1-student-id-input" name="p1_user_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+
+            <label for="p1-pair-id-input">Student 2:</label>
+            <select id="p1-pair-id-input" name="p1_pair_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            Pair 2
+            <br>
+            <label for="p2-student-id-input">Student 1:</label>
+            <select id="p2-student-id-input" name="p2_user_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+
+            <label for="p2-pair-id-input">Student 2:</label>
+            <select id="p2-pair-id-input" name="p2_pair_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            Pair 3
+            <br>
+            <label for="p3-student-id-input">Student 1:</label>
+            <select id="p3-student-id-input" name="p3_user_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+
+            <label for="p3-pair-id-input">Student 2:</label>
+            <select id="p3-pair-id-input" name="p3_pair_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </p>
+        
+        <p>
+            Pair 4
+            <br>
+            <label for="p4-student-id-input">Student 1:</label>
+            <select id="p4-student-id-input" name="p4_user_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+
+            <label for="p4-pair-id-input">Student 2:</label>
+            <select id="p4-pair-id-input" name="p4_pair_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            Pair 5
+            <br>
+            <label for="p5-student-id-input">Student 1:</label>
+            <select id="p5-student-id-input" name="p5_user_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+
+            <label for="p5-pair-id-input">Student 2:</label>
+            <select id="p5-pair-id-input" name="p5_pair_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            Pair 6
+            <br>
+            <label for="p6-student-id-input">Student 1:</label>
+            <select id="p6-student-id-input" name="p6_user_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+
+            <label for="p6-pair-id-input">Student 2:</label>
+            <select id="p6-pair-id-input" name="p6_pair_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            Pair 7
+            <br>
+            <label for="p7-student-id-input">Student 1:</label>
+            <select id="p7-student-id-input" name="p7_user_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+
+            <label for="p7-pair-id-input">Student 2:</label>
+            <select id="p7-pair-id-input" name="p7_pair_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+
+            <label for="p7-pair-id-input">Student 2:</label>
+            <select id="p7-pair-id-input" name="p7_third_id">
+                <option value="" selected>Select a student</option>
+                {% for cohort in cohorts|sort(attribute='start_date') %}
+                    <optgroup label="{{ cohort.cohort_id }}">
+                    {% for student in cohort.students|sort(attribute='fname') %}
+                        <option value="{{ student.student_id }}">{{ student.fname }} {{ student.lname }}</option>
+                    {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
         </p>
 
         <p>
